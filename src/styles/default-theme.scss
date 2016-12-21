@@ -1,0 +1,117 @@
+@import "structure";
+
+$border-color: #aaaaaa;
+$font-size: 14px;
+$font-color: #111111;
+$autocomplete-border-width: 1px;
+
+.selectiv-component {
+  background: #ffffff;
+  border: 1px solid $border-color;
+  font: normal $font-size Arial;
+  color: $font-color;
+
+  &:hover .single-arrow {
+    opacity: 0.8;
+  }
+
+  .selected-options {
+    > li {
+      background-color: #f5f5f5;
+      border: 1px solid #d9d9d9;
+      padding: 3px 6px 3px 5px;
+      margin: 5px 0 5px 5px;
+      border-radius: 3px;
+    }
+
+    .option-input {
+      border-color: transparent;
+      input {
+        font-size: calc(#{$font-size} * 0.9);
+      }
+    }
+
+    .option-close {
+      font-size: calc(#{$font-size} * 1.2);
+      height: 10px;
+      margin: -1px 0 0 2px;
+      opacity: 0.6;
+      &:hover {
+        opacity: 1;
+      }
+    }
+  }
+
+  .single-text {
+    padding: 6px 0 8px 7px;
+    &.placeholder {
+      color: #aaaaaa;
+    }
+  }
+
+  .single-clear {
+    font-size: calc(#{$font-size} * 1.5);
+    opacity: 0.4;
+    margin-left: 5px;
+    padding-top: 3px;
+    &:hover {
+      opacity: 1;
+    }
+  }
+
+  .no-results {
+    padding: 0.35rem;
+  }
+
+  .single-input-wrapper {
+    padding: 0.35rem;
+    input {
+      font-size: 1rem;
+      padding: 0.25rem;
+    }
+  }
+
+  .autocomplete-wrapper {
+    background-color: white;
+    margin-left: -$autocomplete-border-width;
+    border: $autocomplete-border-width solid $border-color;
+  }
+
+  .autocomplete-below {
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  }
+
+  .autocomplete-above {
+    box-shadow: 0 -1px 4px rgba(0,0,0,0.2);
+  }
+
+  .autocomplete {
+    max-height: 100px;
+    li {
+      padding: 5px 10px;
+
+      &.selected {
+        color: #bbbbbb;
+        cursor: default;
+      }
+
+      &.highlighted {
+        background-color: cornflowerblue;
+        &:not(.selected) {
+          color: white;
+          cursor: pointer;
+        }
+      }
+
+      &.new-option-preview {
+        font-style: italic;
+      }
+
+    }
+  }
+
+  .autocomplete-search {
+    background-color: #ff9632;
+  }
+
+}

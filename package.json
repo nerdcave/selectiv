@@ -1,0 +1,43 @@
+{
+  "name": "selectiv",
+  "version": "1.0.0",
+  "description": "Select dropdown component for Vue.js, similar to select2/chosen/selectize.",
+  "author": "Jay Elaraj <jay@nerdcave.com`>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/nerdcave/selectiv"
+  },
+  "bugs": "https://github.com/nerdcave/selectiv/issues",
+  "devDependencies": {
+    "autoprefixer": "^6.5.4",
+    "coffee": "^3.3.0",
+    "jasmine": "^2.5.2",
+    "karma": "^1.3.0",
+    "karma-chrome-launcher": "^2.0.0",
+    "karma-jasmine": "^1.1.0",
+    "karma-phantomjs-launcher": "^1.0.2",
+    "node-sass": "^4.0.0",
+    "npm-run-all": "^3.1.2",
+    "onchange": "^3.2.0",
+    "phantomjs": "^2.1.7",
+    "postcss-cli": "^2.6.0",
+    "rimraf": "^2.5.4",
+    "uglify-js": "^2.7.5",
+    "vue": "^2.1.6"
+  },
+  "scripts": {
+    "clean": "rimraf dist/{css/*,js/*}",
+    "autoprefixer": "postcss -u autoprefixer -r dist/css/*",
+    "build:js": "coffee -o dist/js -c src/scripts && npm run uglify",
+    "uglify": "uglifyjs dist/js/selectiv.js -m -c -o dist/js/selectiv.min.js",
+    "build:css": "node-sass src/styles/default-theme.scss dist/css/selectiv.css && npm run autoprefixer",
+    "test": "karma start test/karma.conf.js --single-run",
+    "watch:js": "onchange 'src/scripts' -- npm run build:js",
+    "watch:css": "onchange 'src/styles' -- npm run build:css",
+    "watch:test": "karma start test/karma.conf.js",
+    "watch:all": "npm-run-all --parallel watch:js watch:css watch:test",
+    "build": "npm run build:css && npm run build:js",
+    "postinstall": "npm run build:all && npm run watch:all"
+  }
+}

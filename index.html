@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <script src="https://unpkg.com/vue/dist/vue.js"></script>
+    <script type="text/javascript" src="dist/js/selectiv.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="dist/css/selectiv.css">
+
+    <style>
+      button[type="submit"] {
+        margin-top: 10px;
+        width: 100px;
+        height: 30px;
+      }
+      body {
+        font: normal 14px 'Open Sans', sans-serif;
+        padding: 15px;
+      }
+      form {
+        width: 40%;
+      }
+    </style>
+  </head>
+
+
+  <body>
+    <form id="tags-example" action="submit.html">
+      <p>Tags example:</p>
+      <ul>
+        <li>Type something and press Enter or Tab to add it</li>
+        <li>Press backspace to delete item before cursor</li>
+        <li>Press left/right to move cursor and add new tag or delete</li>
+      </ul>
+      <span class="select-value">{{ formInputName }}={{ selectedValues }}</span>
+      <selectiv
+        is-multiple
+        :name="formInputName"
+        placeholder="Type something"
+        value-delimiter=","
+        :selected="selected"
+        :has-autocomplete="false"
+        allow-new
+        has-remove-button
+        @change="onChange"
+      ></selectiv>
+      <button type="submit">Submit</button>
+    </form>
+    <script>
+      new Vue({
+        el: '#tags-example',
+        data: {
+          selected: ['basketball', 'football', 'baseball'],
+          selectedValues: [],
+          formInputName: 'tags'
+        },
+        methods: {
+          onChange: function(values) {
+            this.selectedValues = values;
+          }
+        }
+      })
+    </script>
+
+    <hr>
+
+    <form id="multi-example" action="submit.html">
+      <p>Multi-select example:</p>
+      <ul>
+        <li>Multi-select with autocomplete</li>
+        <li>Options passed in as objects, [{{ optionObjects[0] }}, ...]</li>
+        <li>"No results" displayed when searching for something not on the list</li>
+        <li>Press left/right to move cursor and add new tag or delete</li>
+      </ul>
+      <span class="select-value">{{ formInputName }}={{ selectedValues }}</span>
+      <selectiv
+        is-multiple
+        :name="formInputName"
+        placeholder="Type something"
+        :options="optionObjects"
+        has-remove-button
+        @change="onChange">
+        <template slot="xoption" scope="props">
+          <span>aaa{{ props.value }}</span>
+        </template>
+      </selectiv>
+      <button type="submit">Submit</button>
+    </form>
+    <script>
+      new Vue({
+        el: '#multi-example',
+        data: {
+          optionObjects: (function() {
+            var optionStrings = ['basketball', 'football', 'tennis', 'cricket', 'volleyball', 'soccer', 'table tennis'];
+            return optionStrings.map(function(o) {
+              return { text: o, value: 'id_' + Math.round(Math.random() * 1000) }
+            })
+          })(),
+          selectedValues: [],
+          formInputName: 'items[]'
+        },
+        methods: {
+          onChange: function(values) {
+            this.selectedValues = values;
+          }
+        }
+      })
+    </script>
+
+    <hr>
+
+    <form id="single-example" action="submit.html">
+      <p>Single select example:</p>
+      <ul>
+        <li>Single select with search</li>
+        <li>Option "tennis" selected</li>
+      </ul>
+      <span class="select-value">{{ formInputName }}={{ selectedValues }}</span>
+      <selectiv
+        :name="formInputName"
+        placeholder="Choose one..."
+        :options="options"
+        :selected="selected"
+        @change="onChange"
+      ></selectiv>
+      <button type="submit">Submit</button>
+    </form>
+    <script>
+      new Vue({
+        el: '#single-example',
+        data: {
+          options: ['basketball', 'football', 'tennis', 'cricket', 'volleyball', 'soccer', 'table tennis'],
+          selected: 'tennis',
+          selectedValues: [],
+          formInputName: 'sport'
+        },
+        methods: {
+          onChange: function(values) {
+            this.selectedValues = values;
+          }
+        }
+      })
+    </script>
+
+
+
+    <div id="all-options-example">
+      <p>All options example:</p>
+      Value: {{ selectedValues }}
+      <form action="submit.html">
+        <selectiv
+          :name="formFieldName"
+          :is-multiple="isMultiple"
+          :options="options"
+          :allow-new="allowNew"
+          :placeholder="placeholder"
+          :value-delimiter="valueDelimiter"
+          :restore-on-backspace="restoreOnBackspace"
+          :has-remove-button="hasRemoveButton"
+          new-value-format="<<<%value%>>>"
+          @change="onChange"
+        ></selectiv>
+        <button type="submit">Submit</button>
+      </form>
+
+      <input type="radio" id="use_single" :value="false" v-model="isMultiple">
+      <label for="use_single">Single</label>
+      <br>
+      <input type="radio" id="use_multiple" :value="true" v-model="isMultiple">
+      <label for="use_multiple">Multiple</label>
+      <br>
+
+      <input type="radio" id="use_string_options" :value="0" v-model="optionsType">
+      <label for="use_string_options">String options</label>
+      <br>
+      <input type="radio" id="use_object_options" :value="1" v-model="optionsType">
+      <label for="use_object_options">Object options</label>
+
+      <br>
+      <input type="checkbox" id="use_placeholder" v-model="usePlaceholder">
+      <label for="use_placeholder">Placeholder</label>
+      <input type="text" v-model="placeholderValue" :disabled="!usePlaceholder">
+
+
+      <br>
+      <input type="checkbox" id="allow_new" v-model="allowNew">
+      <label for="allow_new">Allow New</label>
+
+      <br>
+      <input type="checkbox" id="restore_on_backspace" v-model="restoreOnBackspace">
+      <label for="restore_on_backspace">Restore on backspace</label>
+
+      <br>
+      <input type="checkbox" id="has_remove_button" v-model="hasRemoveButton">
+      <label for="has_remove_button">Has remove button</label>
+
+      <br>
+      <input type="checkbox" id="delimiter" v-model="valueDelimiter" true-value="," false-value="">
+      <label for="delimiter">Delimiter</label>
+    </div>
+
+<!--
+    <selectiv :options="testObjects" :is-multiple="true" placeholder="Select an option"></selectiv>
+-->
+
+    <script>
+      var optionStrings = ['basketball', 'football', 'tennis', 'cricket', 'volleyball', 'soccer', 'table tennis'];
+      var vmApp = new Vue({
+        el: '#all-options-example',
+        props: ['testing'],
+        data: {
+          optionStrings: optionStrings,
+          optionObjects: (function() {
+            return optionStrings.map(function(o) {
+              return { text: o, value: 'id_' + Math.round(Math.random() * 1000) }
+            })
+          })(),
+          testObjects: [{text: 'one', value: '1'}, {text: 'two', value: 2}, {text: 'three', value: 'three'}, {text: 'nine', value: ''}],
+          isMultiple: true,
+          useStringOptions: false,
+          usePlaceholder: true,
+          placeholderValue: 'Choose option...',
+          optionsType: 0,
+          allowClear: true,
+          allowNew: false,
+          selectedValues: [],
+          restoreOnBackspace: false,
+          hasRemoveButton: false,
+          formFieldName: 'items',
+          valueDelimiter: ''
+        },
+        computed: {
+          options: function() {
+            return this.optionsType === 0 ? this.optionStrings : this.optionObjects
+          },
+          placeholder: function() {
+            return this.usePlaceholder ? this.placeholderValue : ''
+          }
+        },
+        methods: {
+          onChange: function(values) {
+            this.selectedValues = values;
+          }
+        }
+      });
+
+    </script>
+  </body>
+</html>

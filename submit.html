@@ -1,0 +1,34 @@
+<html>
+  <head>
+    <script src="https://unpkg.com/vue/dist/vue.js"></script>
+  </head>
+  <body>
+
+    Submitted:
+
+    <div id="results">
+      <ol>
+        <li v-for="item in items">{{ item }}</li>
+      </ol>
+    </div>
+
+    <script>      
+      new Vue({
+        el: '#results',
+        data: function() {
+          var items = [], vars = window.location.search.substring(1).split('&')
+          if (vars[0] === '') {
+            items.push("None!")
+          } else {
+            for (var i = 0; i < vars.length; i++) {
+              var pair = vars[i].split('=')
+              items.push(decodeURIComponent(pair[0]) + ': ' + decodeURIComponent(pair[1]))
+            }
+          }
+          return { items: items }
+        }
+      })
+    </script>
+
+  </body>
+</html>
