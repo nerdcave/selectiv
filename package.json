@@ -36,8 +36,8 @@
     "watch:js": "onchange 'src/scripts' -- npm run build:js",
     "watch:css": "onchange 'src/styles' -- npm run build:css",
     "watch:test": "karma start test/karma.conf.js",
-    "watch:all": "npm-run-all --parallel watch:js watch:css watch:test",
+    "watch": "npm-run-all --parallel watch:js watch:css watch:test",
     "build": "npm run build:css && npm run build:js",
-    "postinstall": "npm run build:all && npm run watch:all"
+    "postinstall": "npm run build && npm run watch"
   }
 }

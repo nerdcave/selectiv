@@ -24,7 +24,7 @@
   })();
 
   Vue.component('selectiv', {
-    template: '<div class="selectiv-component" @mousedown.prevent="toggleAutocomplete">\n  <select multiple\n    v-if="!useStringInput"\n    v-show="false"\n    :name="name"\n    v-model="currSelectedValues">\n    <option v-for="optionItem in selectedOptions" :value="optionItem.value">{{ optionItem.text }}</option>\n  </select>\n  <input type="hidden" v-if="useStringInput" :name="name" :value="delimitedValue">\n  <template v-if="isMultiple">\n    <ul class="selected-options">\n      <template v-for="selectedOption in selectedOptionsWithInput">\n        <li class="option-input" v-if="selectedOption.isInput">\n          <input type="text" tabindex="0" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"\n            v-model.trim="inputValue"\n            @keydown="keydown"\n            v-focus="isFocused" @focus="isFocused=true" @blur="isFocused=false"\n            :size="inputSize"\n            :placeholder="inputPlaceholder"\n            :style="inputStyles">\n        </li><li class="option" v-else>\n          <span class="option-text" v-html="selectedOption.text"></span>\n          <a class="option-close" v-if="hasRemoveButton" @click="removeSelectedOption(selectedOption)" @mousedown.stop.prevent></a>\n        </li>\n      </template>\n    </ul>\n  </template>\n  <template v-else>\n    <span class="single-text" v-html="singleText" :class="{ placeholder: !isSingleValueSet }"></span>\n    <span class="single-clear" v-if="allowClear" @click="removeSelectedOption(selectedSingleOption)" @mousedown.stop.prevent>&times;</span>\n    <span class="single-arrow" :class="{ \'arrow-up\': isAutocompleteVisible, \'arrow-down\': !isAutocompleteVisible }"></span>\n  </template>\n\n  <div class="autocomplete-wrapper autocomplete-below"\n    v-if="isAutocompleteVisible"\n    v-set-top-position="isAutocompleteVisible">\n\n    <span v-if="!isMultiple" class="single-input-wrapper">\n      <input type="text" tabindex="0" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"\n        v-model.trim="inputValue"\n        @keydown="keydown"\n        v-focus="isFocused" @focus="isFocused=true" @blur="isFocused=false"\n        @mousedown.stop>\n    </span>\n    <slot name="noResults" :search-text="inputValue" v-if="isNoResultsVisible">\n      <span class="no-results">No results</span>\n    </slot>\n    <ul class="autocomplete">\n      <li v-for="(option, index) in autocompleteOptions"\n        :class="{ selected: isSelected(option), \'new-option-preview\': option.isPreview, highlighted: autocompleteIndex === index }"\n        v-scroll-into-view="index === autocompleteIndex"\n        @mouseup="selectAutocompleteOption(index)"\n        @mouseover="autocompleteIndex = index"\n        @mousedown.stop.prevent>\n        <slot name="option" :text="option.text" :value="option.value">\n          <span v-html="formatOptionText(option)"></span>\n        </slot>\n      </li>\n    </ul>\n  </div>\n</div>',
+    template: '<div class="selectiv-component" @mousedown.prevent="toggleAutocomplete">\n  <select multiple\n    v-if="!useStringInput"\n    v-show="false"\n    :name="name"\n    v-model="currSelectedValues">\n    <option v-for="optionItem in selectedOptions" :value="optionItem.value">{{ optionItem.text }}</option>\n  </select>\n  <input type="hidden" v-if="useStringInput" :name="name" :value="delimitedValue">\n  <template v-if="isMultiple">\n    <ul class="selected-options">\n      <template v-for="selectedOption in selectedOptionsWithInput">\n        <li class="option-input" v-if="selectedOption.isInput">\n          <input type="text" tabindex="0" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"\n            v-model.trim="inputValue"\n            @keydown="keydown"\n            v-focus="isFocused" @focus="isFocused=true" @blur="isFocused=false"\n            :size="inputSize"\n            :placeholder="inputPlaceholder"\n            :style="inputStyles">\n        </li><li class="option" v-else>\n          <slot name="selectedOption" :text="selectedOption.text" :value="selectedOption.value">\n            <span class="option-text" v-html="selectedOption.text"></span>\n          </slot>\n          <a class="option-close" v-if="hasRemoveButton" @click="removeSelectedOption(selectedOption)" @mousedown.stop.prevent></a>\n        </li>\n      </template>\n    </ul>\n  </template>\n  <template v-else>\n    <span class="single-text" v-html="singleText" :class="{ placeholder: !isSingleValueSet }"></span>\n    <span class="single-clear" v-if="allowClear" @click="removeSelectedOption(selectedSingleOption)" @mousedown.stop.prevent>&times;</span>\n    <span class="single-arrow" :class="{ \'arrow-up\': isAutocompleteVisible, \'arrow-down\': !isAutocompleteVisible }"></span>\n  </template>\n  <div class="autocomplete-wrapper autocomplete-below"\n    v-if="isAutocompleteVisible"\n    v-set-top-position="isAutocompleteVisible">\n    <span v-if="!isMultiple" class="single-input-wrapper">\n      <input type="text" tabindex="0" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"\n        v-model.trim="inputValue"\n        @keydown="keydown"\n        @mousedown.stop\n        v-focus="isFocused" @focus="isFocused=true" @blur="isFocused=false">\n    </span>\n    <slot name="noResults" :search-text="inputValue" v-if="isNoResultsVisible">\n      <span class="no-results">No results</span>\n    </slot>\n    <ul class="autocomplete">\n      <li v-for="(option, index) in autocompleteOptions"\n        :class="{ selected: isSelected(option), \'new-option-preview\': option.isPreview, highlighted: autocompleteIndex === index }"\n        v-scroll-into-view="index === autocompleteIndex"\n        @mouseup="selectAutocompleteOption(index)"\n        @mouseover="autocompleteIndex = index"\n        @mousedown.stop.prevent>\n        <slot name="option" :text="option.text" :value="option.value" :text-marked="formatOptionText(option)" :value-marked="markOptionField(option.value)">\n          <span v-html="formatOptionText(option)"></span>\n        </slot>\n      </li>\n    </ul>\n  </div>\n</div>',
     props: {
       options: {
         type: Array,
@@ -76,7 +76,11 @@
       },
       valueDelimiter: {
         type: String,
-        "default": ''
+        "default": null
+      },
+      searchValue: {
+        type: Boolean,
+        "default": false
       }
     },
     directives: {
@@ -133,7 +137,7 @@
     },
     data: function() {
       return {
-        currSelectedValues: [].concat(this.selected || []),
+        currSelectedValues: null,
         userAddedOptions: [],
         isFocused: false,
         isAutocompleteVisible: false,
@@ -143,13 +147,14 @@
       };
     },
     created: function() {
+      this.currSelectedValues = this.selectedAsArray;
       this.validateSelectedValues();
-      return this.$emit('change', this.computedValue);
+      return this.fireChange();
     },
     computed: {
       optionItems: function() {
         var options;
-        options = this.options.length > 0 ? this.options : this.selected;
+        options = this.options.length > 0 ? this.options : this.selectedAsArray;
         return options.concat(this.userAddedOptions).map((function(_this) {
           return function(option) {
             var ref, text, value;
@@ -197,11 +202,13 @@
         return Boolean(this.placeholder && this.isSingleValueSet);
       },
       autocompleteOptions: function() {
-        var options, substringOption, text;
-        text = this.inputValue;
-        options = this.optionItems.filter(function(option) {
-          return option.text.indexOf(text) > -1;
-        });
+        var options, ref, regex, substringOption, text;
+        ref = [this.inputValue, new RegExp(this.inputValue.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'i')], text = ref[0], regex = ref[1];
+        options = this.optionItems.filter((function(_this) {
+          return function(option) {
+            return option.text.search(regex) > -1 || (_this.searchValue && String(option.value).search(regex) > -1);
+          };
+        })(this));
         if (text !== '' && this.allowNew) {
           substringOption = options.filter(function(option) {
             return option.text === text;
@@ -248,6 +255,13 @@
         } else {
           return this.singleValue;
         }
+      },
+      selectedAsArray: function() {
+        if (typeof this.selected === 'string' && this.valueDelimiter) {
+          return this.selected.split(this.valueDelimiter);
+        } else {
+          return [].concat(this.selected || []);
+        }
       }
     },
     methods: {
@@ -273,11 +287,9 @@
           this.showAutocomplete();
         } else if ((key === KEYS.up || key === KEYS.down) && this.isAutocompleteVisible) {
           this.incAutocompleteIndex(key === KEYS.up ? -1 : 1);
-        }
-        if (key === KEYS.enter && this.isAutocompleteVisible) {
+        } else if (key === KEYS.enter && this.isAutocompleteVisible) {
           this.selectAutocompleteOption();
-        }
-        if ((key === KEYS.tab || key === KEYS.enter) || (key === KEYS.comma && !event.shiftKey)) {
+        } else if ((key === KEYS.tab || key === KEYS.enter) || (key === KEYS.comma && !event.shiftKey)) {
           allow = !this.addFromInput() && (key !== KEYS.enter && key !== KEYS.comma);
         } else if (key === KEYS.backspace && this.isMultiple && this.inputValue === '' && this.currSelectedValues.length > 0) {
           option = this.findOptionBy('value', this.currSelectedValues[this.inputIndex - 1]);
@@ -392,7 +404,7 @@
         this.currSelectedValues.splice(this.inputIndex, 0, option.value);
         this.inputValue = '';
         this.incInputIndex();
-        this.$emit('change', this.computedValue);
+        this.fireChange();
         Vue.nextTick((function(_this) {
           return function() {
             return _this.hideAutocomplete();
@@ -413,14 +425,36 @@
         if (option.isNew) {
           this.userAddedOptions.splice(this.findIndexByValue(this.userAddedOptions, option.value), 1);
         }
-        this.$emit('change', this.computedValue);
+        this.fireChange();
         return true;
       },
+      markOptionField: function(str) {
+        var part, parts, regex;
+        if (!this.inputValue) {
+          return str;
+        }
+        regex = new RegExp("(" + (this.inputValue.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')) + ")", 'i');
+        parts = (function() {
+          var j, len, ref, results;
+          ref = String(str).split(regex);
+          results = [];
+          for (j = 0, len = ref.length; j < len; j++) {
+            part = ref[j];
+            if (regex.test(part)) {
+              results.push("<mark class=\"autocomplete-search\">" + part + "</mark>");
+            } else {
+              results.push(part);
+            }
+          }
+          return results;
+        })();
+        return parts.join('');
+      },
       formatOptionText: function(option) {
-        if (option.isPreview || !this.inputValue) {
+        if (option.isPreview) {
           return option.text;
         } else {
-          return option.text.split(this.inputValue).join("<mark class=\"autocomplete-search\">" + this.inputValue + "</mark>");
+          return this.markOptionField(option.text);
         }
       },
       findIndexByValue: function(list, value) {
@@ -443,6 +477,9 @@
         }
         ref = [this.autocompleteIndex + amount, this.autocompleteOptions.length - 1], index = ref[0], total = ref[1];
         return this.autocompleteIndex = index > total ? 0 : index <= -1 ? total : index;
+      },
+      fireChange: function() {
+        return this.$emit('change', this.computedValue);
       }
     },
     watch: {
@@ -452,7 +489,11 @@
         if (!newValue) {
           this.inputValue = '';
           this.inputIndex = this.currSelectedValues.length;
-          return this.hideAutocomplete();
+          return Vue.nextTick((function(_this) {
+            return function() {
+              return _this.hideAutocomplete();
+            };
+          })(this));
         }
       }
     }

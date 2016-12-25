@@ -31,7 +31,9 @@ Vue.component 'selectiv',
                 :placeholder="inputPlaceholder"
                 :style="inputStyles">
             </li><li class="option" v-else>
-              <span class="option-text" v-html="selectedOption.text"></span>
+              <slot name="selectedOption" :text="selectedOption.text" :value="selectedOption.value">
+                <span class="option-text" v-html="selectedOption.text"></span>
+              </slot>
               <a class="option-close" v-if="hasRemoveButton" @click="removeSelectedOption(selectedOption)" @mousedown.stop.prevent></a>
             </li>
           </template>
@@ -42,17 +44,15 @@ Vue.component 'selectiv',
         <span class="single-clear" v-if="allowClear" @click="removeSelectedOption(selectedSingleOption)" @mousedown.stop.prevent>&times;</span>
         <span class="single-arrow" :class="{ 'arrow-up': isAutocompleteVisible, 'arrow-down': !isAutocompleteVisible }"></span>
       </template>
-
       <div class="autocomplete-wrapper autocomplete-below"
         v-if="isAutocompleteVisible"
         v-set-top-position="isAutocompleteVisible">
-
         <span v-if="!isMultiple" class="single-input-wrapper">
           <input type="text" tabindex="0" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
             v-model.trim="inputValue"
             @keydown="keydown"
-            v-focus="isFocused" @focus="isFocused=true" @blur="isFocused=false"
-            @mousedown.stop>
+            @mousedown.stop
+            v-focus="isFocused" @focus="isFocused=true" @blur="isFocused=false">
         </span>
         <slot name="noResults" :search-text="inputValue" v-if="isNoResultsVisible">
           <span class="no-results">No results</span>
@@ -64,7 +64,7 @@ Vue.component 'selectiv',
             @mouseup="selectAutocompleteOption(index)"
             @mouseover="autocompleteIndex = index"
             @mousedown.stop.prevent>
-            <slot name="option" :text="option.text" :value="option.value">
+            <slot name="option" :text="option.text" :value="option.value" :text-marked="formatOptionText(option)" :value-marked="markOptionField(option.value)">
               <span v-html="formatOptionText(option)"></span>
             </slot>
           </li>
@@ -109,7 +109,10 @@ Vue.component 'selectiv',
       validator: (value) -> value.indexOf('%value%') > -1
     valueDelimiter:
       type: String
-      default: ''
+      default: null
+    searchValue:
+      type: Boolean
+      default: false
 
   directives:
     'set-top-position':
@@ -142,7 +145,7 @@ Vue.component 'selectiv',
         if binding.value then el.focus() else el.blur()
 
   data: ->
-    currSelectedValues: [].concat(@selected || [])
+    currSelectedValues: null
     userAddedOptions: []
     isFocused: false
     isAutocompleteVisible: false
@@ -151,12 +154,13 @@ Vue.component 'selectiv',
     inputIndex: 0
 
   created: ->
+    @currSelectedValues = @selectedAsArray
     @validateSelectedValues()
-    @$emit('change', @computedValue)
+    @fireChange()
 
   computed:
     optionItems: ->
-      options = if @options.length > 0 then @options else @selected
+      options = if @options.length > 0 then @options else @selectedAsArray
       options.concat(@userAddedOptions).map (option) =>
         [text, value] = if typeof option is 'object'
           [option[@optionsText], option[@optionsValue]]
@@ -182,8 +186,9 @@ Vue.component 'selectiv',
     allowClear: ->
       Boolean(@placeholder && @isSingleValueSet)
     autocompleteOptions: ->
-      text = @inputValue
-      options = @optionItems.filter (option) -> option.text.indexOf(text) > -1
+      [text, regex] = [@inputValue, new RegExp(@inputValue.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'i')]
+      options = @optionItems.filter (option) =>
+        option.text.search(regex) > -1 || (@searchValue && String(option.value).search(regex) > -1)
       if text isnt '' && @allowNew
         substringOption = options.filter((option) -> option.text is text)[0]
         unless substringOption
@@ -204,6 +209,11 @@ Vue.component 'selectiv',
         if @useStringInput then @delimitedValue else @currSelectedValues
       else
         @singleValue
+    selectedAsArray: ->
+      if typeof @selected is 'string' && @valueDelimiter
+        @selected.split(@valueDelimiter)
+      else
+        [].concat(@selected || [])
 
   methods:
     keydown: (event) ->
@@ -218,9 +228,9 @@ Vue.component 'selectiv',
         @showAutocomplete()
       else if key in [KEYS.up, KEYS.down] && @isAutocompleteVisible
         @incAutocompleteIndex(if key is KEYS.up then -1 else 1)
-      if key is KEYS.enter && @isAutocompleteVisible
+      else if key is KEYS.enter && @isAutocompleteVisible
         @selectAutocompleteOption()
-      if key in [KEYS.tab, KEYS.enter] || (key is KEYS.comma && !event.shiftKey)
+      else if key in [KEYS.tab, KEYS.enter] || (key is KEYS.comma && !event.shiftKey)
         allow = !@addFromInput() && key !in [KEYS.enter, KEYS.comma]
       else if key is KEYS.backspace && @isMultiple && @inputValue is '' && @currSelectedValues.length > 0
         option = @findOptionBy('value', @currSelectedValues[@inputIndex - 1])
@@ -262,12 +272,9 @@ Vue.component 'selectiv',
         @autocompleteIndex = index || 0
 
       @isAutocompleteVisible = options.length > 0 || @isNoResultsVisible
-
     hideAutocomplete: ->
-      # console.info("hiding autocomplete")
       @isAutocompleteVisible = false
     toggleAutocomplete: ->
-      # console.log "toggle! #{@isAutocompleteVisible}"
       if @isAutocompleteVisible
         @hideAutocomplete()
         @isFocused = false unless @isMultiple
@@ -291,7 +298,7 @@ Vue.component 'selectiv',
       @currSelectedValues.splice(@inputIndex, 0, option.value)
       @inputValue = ''
       @incInputIndex()
-      @$emit('change', @computedValue)
+      @fireChange()
       Vue.nextTick => @hideAutocomplete()
       true
     unselectOption: (option) ->
@@ -300,13 +307,16 @@ Vue.component 'selectiv',
       @currSelectedValues.splice(index, 1)
       @incInputIndex(-1) if @inputIndex > index
       @userAddedOptions.splice(@findIndexByValue(@userAddedOptions, option.value), 1) if option.isNew
-      @$emit('change', @computedValue)
+      @fireChange()
       true
+    markOptionField: (str) ->
+      return str if !@inputValue
+      regex = new RegExp("(#{@inputValue.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})", 'i')
+      parts = for part in String(str).split(regex)
+        if regex.test(part) then "<mark class=\"autocomplete-search\">#{part}</mark>" else part
+      parts.join('')
     formatOptionText: (option) ->
-      if option.isPreview || !@inputValue
-        option.text
-      else
-        option.text.split(@inputValue).join "<mark class=\"autocomplete-search\">#{@inputValue}</mark>"
+      if option.isPreview then option.text else @markOptionField(option.text)
     findIndexByValue: (list, value) ->
       list.map((item) -> item.value).indexOf(value)
     incInputIndex: (amount = 1) ->
@@ -315,6 +325,8 @@ Vue.component 'selectiv',
     incAutocompleteIndex: (amount = 1) ->
       [index, total] = [@autocompleteIndex + amount, @autocompleteOptions.length - 1]
       @autocompleteIndex = if index > total then 0 else if index <= -1 then total else index
+    fireChange: ->
+      @$emit('change', @computedValue)
 
   watch:
     inputValue: 'showAutocomplete'
@@ -323,4 +335,4 @@ Vue.component 'selectiv',
       unless newValue
         @inputValue = ''
         @inputIndex = @currSelectedValues.length
-        @hideAutocomplete()
+        Vue.nextTick => @hideAutocomplete()

@@ -133,12 +133,11 @@ describe('selectiv', function() {
       it('doesnt show clear X without placeholder', function() {
         delete props.placeholder
         vm = createInstance(props)
+        expect(vm.allowClear).toBe(false)
       })
 
       it('shows placeholder when selection cleared', function() {
         vm = createInstance(props)
-        expect(vm.allowClear).toBe(true)
-        expect(vm.isAutocompleteVisible).toBe(false)
         vm.removeSelectedOption(vm.selectedSingleOption)
         expect(vm.allowClear).toBe(false)
         expect(vm.isAutocompleteVisible).toBe(true)

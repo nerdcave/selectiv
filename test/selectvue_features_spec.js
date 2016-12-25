@@ -57,6 +57,7 @@ describe('selectiv view', function() {
       vm = createInstance(props)
       expect(vm.$('.single-text').textContent).toEqual('one')
       expect(vm.$('span.arrow-down')).toBeTruthy()
+      expect(vm.$('.single-clear')).toBeNull()
     })
 
     it('selects placeholder by default', function() {
@@ -123,11 +124,21 @@ describe('selectiv view', function() {
         })
       })
 
-      it('filters by substring', function(done) {
-        vm.inputValue = 't'
+      it('filters substring text property', function(done) {
+        vm.inputValue = 'T'
         Vue.nextTick(function() {
           expect(vm.$all('.autocomplete > li').map(function(li) { return li.textContent })).toEqual(['two', 'three'])
           expect(vm.$all('.autocomplete > li mark').map(function(li) { return li.textContent })).toEqual(['t', 't'])
+          done()
+        })
+      })
+
+      it('filters substring value property', function(done) {
+        vm = createInstance(props, { searchValue: true })
+        triggerEvent(vm.$el, 'mousedown')
+        vm.inputValue = '1'
+        Vue.nextTick(function() {
+          expect(vm.$all('.autocomplete > li').map(function(li) { return li.textContent })).toEqual(['one'])
           done()
         })
       })
@@ -142,25 +153,18 @@ describe('selectiv view', function() {
       })
     })
 
-    describe('allowClear', function() {
+    describe('with placeholder', function() {
       beforeEach(function() {
         props = {
           options: props.options,
           placeholder: "Choose...",
-          selected: props.options[0].value,
-          allowClear: true
+          selected: props.options[0].value
         }
       })
 
       it('shows clear button', function() {
         vm = createInstance(props)
         expect(vm.$('.single-text + .single-clear')).toBeTruthy()
-      })
-
-      it('doesnt show clear button without placeholder', function() {
-        delete props.placeholder
-        vm = createInstance(props)
-        expect(vm.$('.single-clear')).toBeNull()
       })
 
       it('shows placeholder when cleared', function(done) {
@@ -190,20 +194,40 @@ describe('selectiv view', function() {
       expect(vm.$('.single-text, .arrow-down')).toBeNull()
       expect(vm.$all('.selected-options > li').length).toEqual(1)
       expect(vm.$('.selected-options > li.option-input > input[placeholder=""]')).toBeTruthy()
+      expect(vm.$('input[name=' + vm.name + ']')).toBeTruthy()
     })
 
-    it('selects from param', function() {
-      vm = createInstance(props, {hasRemoveButton: false, selected: ['', '1', '2', 'three']})
-      expect(vm.$('input[name=options]')).toBeNull()
-      expect(vm.$('.option-close')).toBeNull()
-      expect(vm.$all('.selected-options > li.option').map(function(li) {
-        return li.textContent.trim()
-      })).toEqual(['blank', 'one', 'three'])
+
+    describe('selected param', function() {
+      it('selects from param', function() {
+        vm = createInstance(props, {selected: ['', '1', '2', 'three']})
+        expect(vm.$all('.selected-options > li.option').map(function(li) {
+          return li.textContent.trim()
+        })).toEqual(['blank', 'one', 'three'])
+      })
+
+      it('parses string delimiter values', function() {
+        vm = createInstance(props, {selected: '1,2,three', valueDelimiter: ','})
+        expect(vm.$all('.selected-options > li.option').map(function(li) {
+          return li.textContent.trim()
+        })).toEqual(['one', 'three'])
+      })
+
+      it('shows remove button', function() {
+        vm = createInstance(props, {hasRemoveButton: true, selected: ['1']})
+        expect(vm.$('.option-close')).toBeTruthy()
+      })
+
+      it('hides remove button', function() {
+        vm = createInstance(props, {hasRemoveButton: false, selected: ['1']})
+        expect(vm.$('input[name=' + vm.name + ']')).toBeNull()
+        expect(vm.$('.option-close')).toBeNull()
+      })
     })
 
     it('joins values with delimiter', function() {
       vm = createInstance(props, {valueDelimiter: ':', selected: ['1', 'three']})
-      expect(vm.$('input[name=options]').value).toEqual('1:three')
+      expect(vm.$('input[name=' + vm.name + ']').value).toEqual('1:three')
     })
 
     it('shows placeholder', function() {

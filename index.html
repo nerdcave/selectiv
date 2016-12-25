@@ -24,23 +24,22 @@
 
 
   <body>
-    <form id="tags-example" action="submit.html">
+    <form id="tags-example" target="_blank" action="submit.html">
       <p>Tags example:</p>
       <ul>
-        <li>Type something and press Enter or Tab to add it</li>
-        <li>Press backspace to delete item before cursor</li>
-        <li>Press left/right to move cursor and add new tag or delete</li>
+        <li>Type something and press <kbd>enter</kbd>, <kbd>tab</kbd>, or <kbd>comma</kbd> to add it.</li>
+        <li>Press <kbd>left</kbd> or <kbd>right</kbd> to move cursor position.</li>
+        <li>Press backspace to delete a tag.</li>
       </ul>
       <span class="select-value">{{ formInputName }}={{ selectedValues }}</span>
       <selectiv
         is-multiple
-        :name="formInputName"
         placeholder="Type something"
+        allow-new
         value-delimiter=","
+        :name="formInputName"
         :selected="selected"
         :has-autocomplete="false"
-        allow-new
-        has-remove-button
         @change="onChange"
       ></selectiv>
       <button type="submit">Submit</button>
@@ -49,13 +48,15 @@
       new Vue({
         el: '#tags-example',
         data: {
-          selected: ['basketball', 'football', 'baseball'],
+          selected: 'basketball,football,baseball',
+          // this also works:
+          // selected: ['basketball', 'football', 'baseball'],
           selectedValues: [],
           formInputName: 'tags'
         },
         methods: {
           onChange: function(values) {
-            this.selectedValues = values;
+            this.selectedValues = values
           }
         }
       })
@@ -63,25 +64,22 @@
 
     <hr>
 
-    <form id="multi-example" action="submit.html">
-      <p>Multi-select example:</p>
+    <form id="multi-example" target="_blank" action="submit.html">
+      <p>Multi-select with autocomplete example:</p>
       <ul>
-        <li>Multi-select with autocomplete</li>
-        <li>Options passed in as objects, [{{ optionObjects[0] }}, ...]</li>
-        <li>"No results" displayed when searching for something not on the list</li>
-        <li>Press left/right to move cursor and add new tag or delete</li>
+        <li>Press <kbd>down</kbd> to show autocomplete, <kbd>esc</kbd> to close it.</li>
+        <li>Options passed in as objects, [{{ optionObjects[0] }}, ...].</li>
+        <li>"No results" displayed when searching for something not on the list.</li>
+        <li>Press <kbd>left</kbd> or <kbd>right</kbd> to move cursor position.</li>
       </ul>
       <span class="select-value">{{ formInputName }}={{ selectedValues }}</span>
       <selectiv
         is-multiple
-        :name="formInputName"
+        restore-on-backspace
         placeholder="Type something"
+        :name="formInputName"
         :options="optionObjects"
-        has-remove-button
         @change="onChange">
-        <template slot="xoption" scope="props">
-          <span>aaa{{ props.value }}</span>
-        </template>
       </selectiv>
       <button type="submit">Submit</button>
     </form>
@@ -90,7 +88,7 @@
         el: '#multi-example',
         data: {
           optionObjects: (function() {
-            var optionStrings = ['basketball', 'football', 'tennis', 'cricket', 'volleyball', 'soccer', 'table tennis'];
+            var optionStrings = ['basketball', 'football', 'tennis', 'cricket', 'volleyball', 'soccer', 'table tennis']
             return optionStrings.map(function(o) {
               return { text: o, value: 'id_' + Math.round(Math.random() * 1000) }
             })
@@ -100,7 +98,7 @@
         },
         methods: {
           onChange: function(values) {
-            this.selectedValues = values;
+            this.selectedValues = values
           }
         }
       })
@@ -108,11 +106,62 @@
 
     <hr>
 
-    <form id="single-example" action="submit.html">
+    <form id="custom-multi-example" target="_blank" action="submit.html">
+      <p>Multi-select example:</p>
+      <ul>
+        <li>Custom autocomplete options template.</li>
+        <li>Custom selected options template.</li>
+        <li>Custom "No results".</li>
+      </ul>
+
+      <span class="select-value">{{ formInputName }}={{ selectedValues }}</span>
+      <selectiv
+        is-multiple
+        search-value
+        placeholder="Type something"
+        :name="formInputName"
+        :options="emailList"
+        options-text="name"
+        options-value="email"
+        @change="onChange">
+        <template slot="selectedOption" scope="props">
+          <span class="option-text" v-html="formatOption(props)"></span>
+        </template>
+        <template slot="option" scope="props">
+          <div v-html="props.textMarked"></div>
+          <small v-html="props.valueMarked"></small>
+        </template>
+        <span slot="noResults" class="no-results">Email not found</span>
+      </selectiv>
+      <button type="submit">Submit</button>
+    </form>
+    <script>
+      new Vue({
+        el: '#custom-multi-example',
+        data: {
+          emailList: [{name: 'Jay E', email: 'jay@nerdcave.com'}, {name: 'Mike B', email: 'mike@example.com'}, {name: 'Tommy C', email: 'tommy@something.net' }, { name: 'Jimmy D', email: 'james@whatever.org'}],
+          selectedValues: [],
+          formInputName: 'emails[]'
+        },
+        methods: {
+          onChange: function(values) {
+            this.selectedValues = values
+          },
+          formatOption: function(props) {
+            return props.text.slice(0, props.text.indexOf(' ')) + ' &lt;'+ props.value + '&gt;'
+          }
+        }
+      })
+    </script>
+
+    <hr>
+
+    <form id="single-example" target="_blank" action="submit.html">
       <p>Single select example:</p>
       <ul>
-        <li>Single select with search</li>
-        <li>Option "tennis" selected</li>
+        <li>Single select options passed in as strings ['{{ options[0] }}', ...].</li>
+        <li>Initialized with a selected value.</li>
+        <li>Specifying a placeholder allows selected option to be cleared.</li>
       </ul>
       <span class="select-value">{{ formInputName }}={{ selectedValues }}</span>
       <selectiv
@@ -135,7 +184,7 @@
         },
         methods: {
           onChange: function(values) {
-            this.selectedValues = values;
+            this.selectedValues = values
           }
         }
       })
@@ -169,10 +218,10 @@
       <label for="use_multiple">Multiple</label>
       <br>
 
-      <input type="radio" id="use_string_options" :value="0" v-model="optionsType">
+      <input type="radio" id="use_string_options" :value="optionStrings" v-model="options">
       <label for="use_string_options">String options</label>
       <br>
-      <input type="radio" id="use_object_options" :value="1" v-model="optionsType">
+      <input type="radio" id="use_object_options" :value="optionObjects" v-model="options">
       <label for="use_object_options">Object options</label>
 
       <br>
@@ -198,12 +247,8 @@
       <label for="delimiter">Delimiter</label>
     </div>
 
-<!--
-    <selectiv :options="testObjects" :is-multiple="true" placeholder="Select an option"></selectiv>
--->
-
     <script>
-      var optionStrings = ['basketball', 'football', 'tennis', 'cricket', 'volleyball', 'soccer', 'table tennis'];
+      var optionStrings = ['basketball', 'football', 'tennis', 'cricket', 'volleyball', 'soccer', 'table tennis']
       var vmApp = new Vue({
         el: '#all-options-example',
         props: ['testing'],
@@ -214,12 +259,11 @@
               return { text: o, value: 'id_' + Math.round(Math.random() * 1000) }
             })
           })(),
-          testObjects: [{text: 'one', value: '1'}, {text: 'two', value: 2}, {text: 'three', value: 'three'}, {text: 'nine', value: ''}],
+          options: optionStrings,
           isMultiple: true,
           useStringOptions: false,
           usePlaceholder: true,
           placeholderValue: 'Choose option...',
-          optionsType: 0,
           allowClear: true,
           allowNew: false,
           selectedValues: [],
@@ -229,19 +273,16 @@
           valueDelimiter: ''
         },
         computed: {
-          options: function() {
-            return this.optionsType === 0 ? this.optionStrings : this.optionObjects
-          },
           placeholder: function() {
             return this.usePlaceholder ? this.placeholderValue : ''
           }
         },
         methods: {
           onChange: function(values) {
-            this.selectedValues = values;
+            this.selectedValues = values
           }
         }
-      });
+      })
 
     </script>
   </body>
