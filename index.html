@@ -7,41 +7,56 @@
     <link rel="stylesheet" type="text/css" href="dist/css/selectiv.css">
 
     <style>
+      body {
+        font: normal 14px 'Open Sans', sans-serif;
+        color: #333;
+        padding: 15px;
+      }
       button[type="submit"] {
         margin-top: 10px;
+        margin-bottom: 14px;
         width: 100px;
         height: 30px;
       }
-      body {
-        font: normal 14px 'Open Sans', sans-serif;
-        padding: 15px;
-      }
       form {
-        width: 40%;
+        width: 45%;
+      }
+      kbd {
+        border: 1px solid #ccc;
+        padding: 0 2px;
+        border-radius: 2px;
+      }
+      .select-value {
+        margin: 10px 0;
+      }
+      li {
+        margin-bottom: 2px;
       }
     </style>
   </head>
 
 
   <body>
+    <p>Demo and component by Jay Elaraj. Follow project on github.</p>
+    <h1>selectiv component demo for vue.js</h1>
     <form id="tags-example" target="_blank" action="submit.html">
-      <p>Tags example:</p>
+      <h2>Tags:</h2>
       <ul>
         <li>Type something and press <kbd>enter</kbd>, <kbd>tab</kbd>, or <kbd>comma</kbd> to add it.</li>
         <li>Press <kbd>left</kbd> or <kbd>right</kbd> to move cursor position.</li>
-        <li>Press backspace to delete a tag.</li>
+        <li>Press backspace to delete tag behind cursor.</li>
       </ul>
-      <span class="select-value">{{ formInputName }}={{ selectedValues }}</span>
+      <p class="select-value">{{ name }}={{ selectedValues }}</p>
       <selectiv
         is-multiple
         placeholder="Type something"
         allow-new
         value-delimiter=","
-        :name="formInputName"
+        :name="name"
         :selected="selected"
         :has-autocomplete="false"
-        @change="onChange"
-      ></selectiv>
+        @change="onChange">
+      </selectiv>
       <button type="submit">Submit</button>
     </form>
     <script>
@@ -49,10 +64,10 @@
         el: '#tags-example',
         data: {
           selected: 'basketball,football,baseball',
-          // this also works:
+          // array also works:
           // selected: ['basketball', 'football', 'baseball'],
           selectedValues: [],
-          formInputName: 'tags'
+          name: 'tags'
         },
         methods: {
           onChange: function(values) {
@@ -65,19 +80,20 @@
     <hr>
 
     <form id="multi-example" target="_blank" action="submit.html">
-      <p>Multi-select with autocomplete example:</p>
+      <h2>Multi-select with autocomplete:</h2>
       <ul>
-        <li>Press <kbd>down</kbd> to show autocomplete, <kbd>esc</kbd> to close it.</li>
+        <li>Press <kbd>esc</kbd> to close autocomplete, press <kbd>down</kbd> to show it.</li>
         <li>Options passed in as objects, [{{ optionObjects[0] }}, ...].</li>
-        <li>"No results" displayed when searching for something not on the list.</li>
+        <li>"No results" shown when searching for missing option (new entries disallowed).</li>
+        <li>Pressing backspace on a selected option will delete it but restores its text.</li>
         <li>Press <kbd>left</kbd> or <kbd>right</kbd> to move cursor position.</li>
       </ul>
-      <span class="select-value">{{ formInputName }}={{ selectedValues }}</span>
+      <p class="select-value">{{ name }}={{ selectedValues }}</p>
       <selectiv
         is-multiple
         restore-on-backspace
         placeholder="Type something"
-        :name="formInputName"
+        :name="name"
         :options="optionObjects"
         @change="onChange">
       </selectiv>
@@ -94,7 +110,7 @@
             })
           })(),
           selectedValues: [],
-          formInputName: 'items[]'
+          name: 'items[]'
         },
         methods: {
           onChange: function(values) {
@@ -107,19 +123,19 @@
     <hr>
 
     <form id="custom-multi-example" target="_blank" action="submit.html">
-      <p>Multi-select example:</p>
+      <h2>Custom multi-select with autocomplete:</h2>
       <ul>
-        <li>Custom autocomplete options template.</li>
-        <li>Custom selected options template.</li>
-        <li>Custom "No results".</li>
+        <li>Custom template for autocomplete options.</li>
+        <li>Custom template for selected options.</li>
+        <li>Custom "No results" (displays "Contact not found").</li>
       </ul>
 
-      <span class="select-value">{{ formInputName }}={{ selectedValues }}</span>
+      <p class="select-value">{{ name }}={{ selectedValues }}</p>
       <selectiv
         is-multiple
         search-value
         placeholder="Type something"
-        :name="formInputName"
+        :name="name"
         :options="emailList"
         options-text="name"
         options-value="email"
@@ -131,7 +147,7 @@
           <div v-html="props.textMarked"></div>
           <small v-html="props.valueMarked"></small>
         </template>
-        <span slot="noResults" class="no-results">Email not found</span>
+        <span slot="noResults" class="no-results">Contact not found</span>
       </selectiv>
       <button type="submit">Submit</button>
     </form>
@@ -141,7 +157,7 @@
         data: {
           emailList: [{name: 'Jay E', email: 'jay@nerdcave.com'}, {name: 'Mike B', email: 'mike@example.com'}, {name: 'Tommy C', email: 'tommy@something.net' }, { name: 'Jimmy D', email: 'james@whatever.org'}],
           selectedValues: [],
-          formInputName: 'emails[]'
+          name: 'emails[]'
         },
         methods: {
           onChange: function(values) {
@@ -157,20 +173,21 @@
     <hr>
 
     <form id="single-example" target="_blank" action="submit.html">
-      <p>Single select example:</p>
+      <h2>Single select:</h2>
       <ul>
         <li>Single select options passed in as strings ['{{ options[0] }}', ...].</li>
         <li>Initialized with a selected value.</li>
+        <li>To select an option, click and hold down mouse button, drag over an option, then release.
         <li>Specifying a placeholder allows selected option to be cleared.</li>
       </ul>
-      <span class="select-value">{{ formInputName }}={{ selectedValues }}</span>
+      <p class="select-value">{{ name }}={{ selectedValues }}</p>
       <selectiv
-        :name="formInputName"
+        :name="name"
         placeholder="Choose one..."
         :options="options"
         :selected="selected"
-        @change="onChange"
-      ></selectiv>
+        @change="onChange">
+      </selectiv>
       <button type="submit">Submit</button>
     </form>
     <script>
@@ -180,7 +197,7 @@
           options: ['basketball', 'football', 'tennis', 'cricket', 'volleyball', 'soccer', 'table tennis'],
           selected: 'tennis',
           selectedValues: [],
-          formInputName: 'sport'
+          name: 'sport'
         },
         methods: {
           onChange: function(values) {
@@ -191,13 +208,12 @@
     </script>
 
 
-
     <div id="all-options-example">
-      <p>All options example:</p>
-      Value: {{ selectedValues }}
+      <h2>All options:</h2>
+      <p class="select-value">{{ name }}={{ selectedValues }}</p>
       <form action="submit.html">
         <selectiv
-          :name="formFieldName"
+          :name="name"
           :is-multiple="isMultiple"
           :options="options"
           :allow-new="allowNew"
@@ -269,7 +285,7 @@
           selectedValues: [],
           restoreOnBackspace: false,
           hasRemoveButton: false,
-          formFieldName: 'items',
+          name: 'items',
           valueDelimiter: ''
         },
         computed: {
