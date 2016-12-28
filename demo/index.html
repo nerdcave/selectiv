@@ -3,8 +3,8 @@
 
   <head>
     <script src="https://unpkg.com/vue/dist/vue.js"></script>
-    <script type="text/javascript" src="dist/js/selectiv.min.js"></script>
-    <link rel="stylesheet" type="text/css" href="dist/css/selectiv.css">
+    <script type="text/javascript" src="../dist/js/selectiv.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="../dist/css/selectiv.css">
 
     <style>
       body {
@@ -53,7 +53,7 @@
         allow-new
         value-delimiter=","
         :name="name"
-        :selected="selected"
+        :value="value"
         :has-autocomplete="false"
         @change="onChange">
       </selectiv>
@@ -63,9 +63,9 @@
       new Vue({
         el: '#tags-example',
         data: {
-          selected: 'basketball,football,baseball',
+          value: 'basketball,football,baseball',
           // array also works:
-          // selected: ['basketball', 'football', 'baseball'],
+          // value: ['basketball', 'football', 'baseball'],
           selectedValues: [],
           name: 'tags'
         },
@@ -185,7 +185,7 @@
         :name="name"
         placeholder="Choose one..."
         :options="options"
-        :selected="selected"
+        :value="value"
         @change="onChange">
       </selectiv>
       <button type="submit">Submit</button>
@@ -195,7 +195,7 @@
         el: '#single-example',
         data: {
           options: ['basketball', 'football', 'tennis', 'cricket', 'volleyball', 'soccer', 'table tennis'],
-          selected: 'tennis',
+          value: 'tennis',
           selectedValues: [],
           name: 'sport'
         },
