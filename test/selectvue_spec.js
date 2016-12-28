@@ -97,12 +97,12 @@ describe('selectiv', function() {
     })
 
     it('selects param value', function() {
-      vm = createInstance(props, {selected: props.options[1].value})
+      vm = createInstance(props, {value: props.options[1].value})
       expectOptionSelected(1)
     })
 
     it('selects first when invalid value', function () {
-      vm = createInstance(props, {selected: 'missing'})
+      vm = createInstance(props, {value: 'missing'})
       expectOptionSelected(0)
     })
 
@@ -121,7 +121,7 @@ describe('selectiv', function() {
         props = {
           options: props.options,
           placeholder: "Choose...",
-          selected: props.options[0].value
+          value: props.options[0].value
         }
       })
 
@@ -199,14 +199,14 @@ describe('selectiv', function() {
     })
 
     it('selects param values', function() {
-      vm = createInstance(props, {selected: ['1', '2', 'three', 4]})
+      vm = createInstance(props, {value: ['1', '2', 'three', 4]})
       expect(vm.inputIndex).toEqual(2)
       expect(vm.selectedOptionsWithInput[2].isInput).toBe(true)
       expect(vm.selectedOptions).toEqual([vm.optionItems[0], vm.optionItems[2]])
     })
 
     it('selects edge case values', function() {
-      vm = createInstance(props, {selected: ['', 2, 'nada']})
+      vm = createInstance(props, {value: ['', 2, 'nada']})
       expect(vm.selectedOptions).toEqual([vm.optionItems[3], vm.optionItems[1]])
     })
 
@@ -216,7 +216,7 @@ describe('selectiv', function() {
     })
 
     it('deletes options', function() {
-      vm = createInstance(props, {selected: [2, '1', 'three']})
+      vm = createInstance(props, {value: [2, '1', 'three']})
       vm.removeSelectedOption(vm.selectedOptions[1])
       expect(vm.currSelectedValues).toEqual([2, 'three'])
       expect(vm.isAutocompleteVisible).toBe(true)
@@ -224,7 +224,7 @@ describe('selectiv', function() {
     })
 
     it('shows placeholder after deletion', function() {
-      vm = createInstance(props, {selected: '1', placeholder: "Choose..."})
+      vm = createInstance(props, {value: '1', placeholder: "Choose..."})
       expect(vm.inputPlaceholder).toEqual('')
       vm.removeSelectedOption(vm.selectedOptions[0])
       expect(vm.inputPlaceholder).toEqual(props.placeholder)
@@ -242,7 +242,7 @@ describe('selectiv', function() {
 
     describe('input position', function() {
       beforeEach(function() {
-        vm = createInstance(props, {selected: ['1', 2]})
+        vm = createInstance(props, {value: ['1', 2]})
         vm.isFocused = true
         vm.incInputIndex(-1)
       })

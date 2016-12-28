@@ -89,7 +89,7 @@ Vue.component 'selectiv',
     placeholder:
       type: String
       default: ''
-    selected: [Array, String, Number]
+    value: [Array, String, Number]
     name:
       default: 'options'
     allowNew:
@@ -154,13 +154,13 @@ Vue.component 'selectiv',
     inputIndex: 0
 
   created: ->
-    @currSelectedValues = @selectedAsArray
+    @currSelectedValues = @valueAsArray
     @validateSelectedValues()
     @fireChange()
 
   computed:
     optionItems: ->
-      options = if @options.length > 0 then @options else @selectedAsArray
+      options = if @options.length > 0 then @options else @valueAsArray
       options.concat(@userAddedOptions).map (option) =>
         [text, value] = if typeof option is 'object'
           [option[@optionsText], option[@optionsValue]]
@@ -209,11 +209,11 @@ Vue.component 'selectiv',
         if @useStringInput then @delimitedValue else @currSelectedValues
       else
         @singleValue
-    selectedAsArray: ->
-      if typeof @selected is 'string' && @valueDelimiter
-        @selected.split(@valueDelimiter)
+    valueAsArray: ->
+      if typeof @value is 'string' && @valueDelimiter
+        @value.split(@valueDelimiter)
       else
-        [].concat(@selected || [])
+        [].concat(@value || [])
 
   methods:
     keydown: (event) ->

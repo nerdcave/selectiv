@@ -48,7 +48,7 @@
         type: String,
         "default": ''
       },
-      selected: [Array, String, Number],
+      value: [Array, String, Number],
       name: {
         "default": 'options'
       },
@@ -147,14 +147,14 @@
       };
     },
     created: function() {
-      this.currSelectedValues = this.selectedAsArray;
+      this.currSelectedValues = this.valueAsArray;
       this.validateSelectedValues();
       return this.fireChange();
     },
     computed: {
       optionItems: function() {
         var options;
-        options = this.options.length > 0 ? this.options : this.selectedAsArray;
+        options = this.options.length > 0 ? this.options : this.valueAsArray;
         return options.concat(this.userAddedOptions).map((function(_this) {
           return function(option) {
             var ref, text, value;
@@ -256,11 +256,11 @@
           return this.singleValue;
         }
       },
-      selectedAsArray: function() {
-        if (typeof this.selected === 'string' && this.valueDelimiter) {
-          return this.selected.split(this.valueDelimiter);
+      valueAsArray: function() {
+        if (typeof this.value === 'string' && this.valueDelimiter) {
+          return this.value.split(this.valueDelimiter);
         } else {
-          return [].concat(this.selected || []);
+          return [].concat(this.value || []);
         }
       }
     },

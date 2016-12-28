@@ -66,12 +66,12 @@ describe('selectiv view', function() {
     })
 
     it('selects from param', function() {
-      vm = createInstance(props, {selected: 'three'})
+      vm = createInstance(props, {value: 'three'})
       expect(vm.$('.single-text').textContent).toEqual('three')
     })
 
     it('selects first when invalid param', function() {
-      vm = createInstance(props, {selected: 'missing'})
+      vm = createInstance(props, {value: 'missing'})
       expect(vm.$('.single-text').textContent).toEqual('one')
     })
 
@@ -158,7 +158,7 @@ describe('selectiv view', function() {
         props = {
           options: props.options,
           placeholder: "Choose...",
-          selected: props.options[0].value
+          value: props.options[0].value
         }
       })
 
@@ -200,33 +200,33 @@ describe('selectiv view', function() {
 
     describe('selected param', function() {
       it('selects from param', function() {
-        vm = createInstance(props, {selected: ['', '1', '2', 'three']})
+        vm = createInstance(props, {value: ['', '1', '2', 'three']})
         expect(vm.$all('.selected-options > li.option').map(function(li) {
           return li.textContent.trim()
         })).toEqual(['blank', 'one', 'three'])
       })
 
       it('parses string delimiter values', function() {
-        vm = createInstance(props, {selected: '1,2,three', valueDelimiter: ','})
+        vm = createInstance(props, {value: '1,2,three', valueDelimiter: ','})
         expect(vm.$all('.selected-options > li.option').map(function(li) {
           return li.textContent.trim()
         })).toEqual(['one', 'three'])
       })
 
       it('shows remove button', function() {
-        vm = createInstance(props, {hasRemoveButton: true, selected: ['1']})
+        vm = createInstance(props, {hasRemoveButton: true, value: ['1']})
         expect(vm.$('.option-close')).toBeTruthy()
       })
 
       it('hides remove button', function() {
-        vm = createInstance(props, {hasRemoveButton: false, selected: ['1']})
+        vm = createInstance(props, {hasRemoveButton: false, value: ['1']})
         expect(vm.$('input[name=' + vm.name + ']')).toBeNull()
         expect(vm.$('.option-close')).toBeNull()
       })
     })
 
     it('joins values with delimiter', function() {
-      vm = createInstance(props, {valueDelimiter: ':', selected: ['1', 'three']})
+      vm = createInstance(props, {valueDelimiter: ':', value: ['1', 'three']})
       expect(vm.$('input[name=' + vm.name + ']').value).toEqual('1:three')
     })
 
@@ -345,7 +345,7 @@ describe('selectiv view', function() {
 
     describe('input position', function() {
       beforeEach(function() {
-        vm = createInstance(props, {selected: ['1', 'three']})
+        vm = createInstance(props, {value: ['1', 'three']})
         triggerEvent(vm.$('.option-input > input'), 'keydown', KEYS.left)
       })
 
@@ -463,7 +463,7 @@ describe('selectiv view', function() {
 
     describe('deleting', function() {
       it('removes option by clicking X', function(done) {
-        vm = createInstance(props, {hasRemoveButton: true, selected: ['three', '1']})
+        vm = createInstance(props, {hasRemoveButton: true, value: ['three', '1']})
         triggerEvent(vm.$('.selected-options > li.option a.option-close'), 'click')
         Vue.nextTick(function() {
           var liTags = vm.$all('.selected-options > li.option')
@@ -474,7 +474,7 @@ describe('selectiv view', function() {
       })
 
       it('remove option on backspace', function(done) {
-        vm = createInstance(props, {selected: ['three']})
+        vm = createInstance(props, {value: ['three']})
         triggerEvent(vm.$('li.option-input > input'), 'keydown', KEYS.backspace)
         Vue.nextTick(function() {
           expect(vm.$('.selected-options > li.option')).toBeNull()
@@ -484,7 +484,7 @@ describe('selectiv view', function() {
       })
 
       it('removes option on backspace and restores input', function(done) {
-        vm = createInstance(props, {restoreOnBackspace: true, selected: ['three']})
+        vm = createInstance(props, {restoreOnBackspace: true, value: ['three']})
         triggerEvent(vm.$('li.option-input > input'), 'keydown', KEYS.backspace)
         Vue.nextTick(function() {
           expect(vm.$('.option-input > input').value).toEqual('three')
