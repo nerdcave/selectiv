@@ -150,13 +150,13 @@ Vue.component 'selectiv',
     inputIndex: 0
 
   created: ->
-    @currSelectedValues = @valueAsArray
+    @currSelectedValues = @valueAsArray()
     @validateSelectedValues()
     @fireChange()
 
   computed:
     optionItems: ->
-      options = if @options.length > 0 then @options else @valueAsArray
+      options = if @options.length > 0 then @options else @valueAsArray()
       options.concat(@userAddedOptions).map (option) =>
         [text, value] = if typeof option is 'object'
           [option[@optionsText], option[@optionsValue]]
@@ -205,11 +205,6 @@ Vue.component 'selectiv',
         if @useStringInput then @delimitedValue else @currSelectedValues
       else
         @singleValue
-    valueAsArray: ->
-      if typeof @value is 'string' && @valueDelimiter
-        @value.split(@valueDelimiter)
-      else
-        [].concat(@value || [])
 
   methods:
     keydown: (event) ->
@@ -323,6 +318,11 @@ Vue.component 'selectiv',
       @autocompleteIndex = if index > total then 0 else if index <= -1 then total else index
     fireChange: ->
       @$emit('change', @computedValue)
+    valueAsArray: ->
+      if typeof @value is 'string' && @valueDelimiter
+        @value.split(@valueDelimiter)
+      else
+        [].concat(@value || [])
 
   watch:
     inputValue: 'showAutocomplete'

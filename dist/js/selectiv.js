@@ -147,14 +147,14 @@
       };
     },
     created: function() {
-      this.currSelectedValues = this.valueAsArray;
+      this.currSelectedValues = this.valueAsArray();
       this.validateSelectedValues();
       return this.fireChange();
     },
     computed: {
       optionItems: function() {
         var options;
-        options = this.options.length > 0 ? this.options : this.valueAsArray;
+        options = this.options.length > 0 ? this.options : this.valueAsArray();
         return options.concat(this.userAddedOptions).map((function(_this) {
           return function(option) {
             var ref, text, value;
@@ -254,13 +254,6 @@
           }
         } else {
           return this.singleValue;
-        }
-      },
-      valueAsArray: function() {
-        if (typeof this.value === 'string' && this.valueDelimiter) {
-          return this.value.split(this.valueDelimiter);
-        } else {
-          return [].concat(this.value || []);
         }
       }
     },
@@ -480,6 +473,13 @@
       },
       fireChange: function() {
         return this.$emit('change', this.computedValue);
+      },
+      valueAsArray: function() {
+        if (typeof this.value === 'string' && this.valueDelimiter) {
+          return this.value.split(this.valueDelimiter);
+        } else {
+          return [].concat(this.value || []);
+        }
       }
     },
     watch: {
