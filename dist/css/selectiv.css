@@ -137,5 +137,5 @@
         cursor: pointer; }
     .selectiv-component .autocomplete li.new-option-preview {
       font-style: italic; }
-  .selectiv-component .autocomplete-search {
-    background-color: #ff9632; }
+  .selectiv-component .search-match {
+    background-color: #fff38c; }

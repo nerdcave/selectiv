@@ -15,8 +15,7 @@
       button[type="submit"] {
         margin-top: 10px;
         margin-bottom: 14px;
-        width: 100px;
-        height: 30px;
+        padding: 10px 20px;
       }
       form {
         width: 45%;
@@ -32,13 +31,23 @@
       li {
         margin-bottom: 2px;
       }
+      hr {
+        height: 1px;
+        margin: 1.5em 0;
+        border: 0;
+        border-top: 1px solid #ddd;
+      }
+      h1, h2 { font-weight: 500; }
+
+      .autocomplete { max-height: 126px; }
+      #custom-multi-example .autocomplete { max-height: 150px; }
     </style>
   </head>
 
 
   <body>
-    <p>Demo and component by Jay Elaraj. Follow project on github.</p>
-    <h1>selectiv component demo for vue.js</h1>
+    <h1><a href="https://github.com/nerdcave/selectiv">selectiv</a> demo for vue.js</h1>
+    <hr>
     <form id="tags-example" target="_blank" action="submit.html">
       <h2>Tags:</h2>
       <ul>
@@ -84,9 +93,8 @@
       <ul>
         <li>Press <kbd>esc</kbd> to close autocomplete, press <kbd>down</kbd> to show it.</li>
         <li>Options passed in as objects, [{{ optionObjects[0] }}, ...].</li>
-        <li>"No results" shown when searching for missing option (new entries disallowed).</li>
-        <li>Pressing backspace on a selected option will delete it but restores its text.</li>
-        <li>Press <kbd>left</kbd> or <kbd>right</kbd> to move cursor position.</li>
+        <li>New entries disallowed; "No results" displayed.</li>
+        <li>Press backspace to delete an option and its text will be restored.</li>
       </ul>
       <p class="select-value">{{ name }}={{ selectedValues }}</p>
       <selectiv
@@ -175,8 +183,8 @@
     <form id="single-example" target="_blank" action="submit.html">
       <h2>Single select:</h2>
       <ul>
-        <li>Single select options passed in as strings ['{{ options[0] }}', ...].</li>
-        <li>Initialized with a selected value.</li>
+        <li>Initialized with a selected value ({{ value }}).</li>
+        <li>Options passed in as strings ['{{ options[0] }}', ...].</li>
         <li>To select an option, click and hold down mouse button, drag over an option, then release.
         <li>Specifying a placeholder allows selected option to be cleared.</li>
       </ul>
@@ -208,98 +216,9 @@
     </script>
 
 
-    <div id="all-options-example">
-      <h2>All options:</h2>
-      <p class="select-value">{{ name }}={{ selectedValues }}</p>
-      <form action="submit.html">
-        <selectiv
-          :name="name"
-          :is-multiple="isMultiple"
-          :options="options"
-          :allow-new="allowNew"
-          :placeholder="placeholder"
-          :value-delimiter="valueDelimiter"
-          :restore-on-backspace="restoreOnBackspace"
-          :has-remove-button="hasRemoveButton"
-          new-value-format="<<<%value%>>>"
-          @change="onChange"
-        ></selectiv>
-        <button type="submit">Submit</button>
-      </form>
-
-      <input type="radio" id="use_single" :value="false" v-model="isMultiple">
-      <label for="use_single">Single</label>
-      <br>
-      <input type="radio" id="use_multiple" :value="true" v-model="isMultiple">
-      <label for="use_multiple">Multiple</label>
-      <br>
-
-      <input type="radio" id="use_string_options" :value="optionStrings" v-model="options">
-      <label for="use_string_options">String options</label>
-      <br>
-      <input type="radio" id="use_object_options" :value="optionObjects" v-model="options">
-      <label for="use_object_options">Object options</label>
-
-      <br>
-      <input type="checkbox" id="use_placeholder" v-model="usePlaceholder">
-      <label for="use_placeholder">Placeholder</label>
-      <input type="text" v-model="placeholderValue" :disabled="!usePlaceholder">
-
-
-      <br>
-      <input type="checkbox" id="allow_new" v-model="allowNew">
-      <label for="allow_new">Allow New</label>
-
-      <br>
-      <input type="checkbox" id="restore_on_backspace" v-model="restoreOnBackspace">
-      <label for="restore_on_backspace">Restore on backspace</label>
-
-      <br>
-      <input type="checkbox" id="has_remove_button" v-model="hasRemoveButton">
-      <label for="has_remove_button">Has remove button</label>
-
-      <br>
-      <input type="checkbox" id="delimiter" v-model="valueDelimiter" true-value="," false-value="">
-      <label for="delimiter">Delimiter</label>
-    </div>
-
-    <script>
-      var optionStrings = ['basketball', 'football', 'tennis', 'cricket', 'volleyball', 'soccer', 'table tennis']
-      var vmApp = new Vue({
-        el: '#all-options-example',
-        props: ['testing'],
-        data: {
-          optionStrings: optionStrings,
-          optionObjects: (function() {
-            return optionStrings.map(function(o) {
-              return { text: o, value: 'id_' + Math.round(Math.random() * 1000) }
-            })
-          })(),
-          options: optionStrings,
-          isMultiple: true,
-          useStringOptions: false,
-          usePlaceholder: true,
-          placeholderValue: 'Choose option...',
-          allowClear: true,
-          allowNew: false,
-          selectedValues: [],
-          restoreOnBackspace: false,
-          hasRemoveButton: false,
-          name: 'items',
-          valueDelimiter: ''
-        },
-        computed: {
-          placeholder: function() {
-            return this.usePlaceholder ? this.placeholderValue : ''
-          }
-        },
-        methods: {
-          onChange: function(values) {
-            this.selectedValues = values
-          }
-        }
-      })
-
-    </script>
+    <hr>
+    <footer>
+      &copy; 2017, <a href="http://nerdcave.com">Jay Elaraj</a>
+    </footer>
   </body>
 </html>

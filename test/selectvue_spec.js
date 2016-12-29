@@ -1,3 +1,5 @@
+// Mostly experimental; leaning on the feature tests
+
 describe('selectiv', function() {
 
   function createInstance(propsData, moreProps) {

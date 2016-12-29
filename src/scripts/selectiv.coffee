@@ -11,11 +11,7 @@ class OptionItem
 Vue.component 'selectiv',
   template: '''
     <div class="selectiv-component" @mousedown.prevent="toggleAutocomplete">
-      <select multiple
-        v-if="!useStringInput"
-        v-show="false"
-        :name="name"
-        v-model="currSelectedValues">
+      <select multiple v-show="false" v-if="!useStringInput" :name="name" v-model="currSelectedValues">
         <option v-for="optionItem in selectedOptions" :value="optionItem.value">{{ optionItem.text }}</option>
       </select>
       <input type="hidden" v-if="useStringInput" :name="name" :value="delimitedValue">
@@ -217,9 +213,9 @@ Vue.component 'selectiv',
 
   methods:
     keydown: (event) ->
+      # todo: move this somewhere "global"
       KEYS = { left: 37, up: 38, right: 39, down: 40, enter: 13, tab: 9, backspace: 8, esc: 27, comma: 188 }
       [allow, key] = [false, if event.keyCode then event.keyCode else event.which]
-      # console.log("KEYDOWN " + key)
       if key is KEYS.esc
         @hideAutocomplete()
       else if key in [KEYS.left, KEYS.right] && @inputValue is ''
@@ -313,7 +309,7 @@ Vue.component 'selectiv',
       return str if !@inputValue
       regex = new RegExp("(#{@inputValue.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})", 'i')
       parts = for part in String(str).split(regex)
-        if regex.test(part) then "<mark class=\"autocomplete-search\">#{part}</mark>" else part
+        if regex.test(part) then "<mark class=\"search-match\">#{part}</mark>" else part
       parts.join('')
     formatOptionText: (option) ->
       if option.isPreview then option.text else @markOptionField(option.text)
