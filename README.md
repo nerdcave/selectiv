@@ -1,9 +1,11 @@
 # selectiv for Vue.js
 
-Selectiv is a lightweight component for Vue.js that gives you a single select, multi select, and tagging input. Other features:
+Selectiv is a lightweight component for Vue.js that acts as a single select, multi select, or tagging input.
+Features:
 
-  - Super lightweight
-  - Submits as a normal select or text input in a form
+  - Small, lightweight, no dependencies (aside from Vue)
+  - Search to filter options
+  - Submits in a form as a normal select or text input
   - Supports templates to customize display
 
 
@@ -31,4 +33,4 @@ See `package.json` for all scripts.
 
 
 ## dependencies
-[vue.js](https://nodejs.org/) v2+
+[Vue.js](https://vuejs.org/) v2+

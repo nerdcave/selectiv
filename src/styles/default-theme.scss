@@ -86,6 +86,7 @@ $autocomplete-border-width: 1px;
   }
 
   .autocomplete {
+    max-height: 200px;
     li {
       padding: 5px 10px;
 

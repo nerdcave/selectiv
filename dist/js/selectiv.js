@@ -2,7 +2,7 @@
 
 /*
  selectiv v1.0.0 for Vue 2+
- (c) Jay Elaraj - http://nerdcave.com
+ (c) 2017, Jay Elaraj - http://nerdcave.com
  */
 
 (function() {
@@ -86,12 +86,13 @@
     directives: {
       'set-top-position': {
         inserted: function(el, binding) {
-          var borderWidths, rect, ref, styles, wrapper;
+          var borderWidths, rect, styles, wrapper;
           if (binding.value) {
-            ref = [el.getBoundingClientRect(), el.parentNode], rect = ref[0], wrapper = ref[1];
-            if (rect.top + rect.height < window.innerHeight) {
+            rect = el.getBoundingClientRect();
+            if (rect.top + rect.height < window.innerHeight || window.innerHeight - rect.top > rect.top) {
               return el.className = el.className.replace('autocomplete-above', 'autocomplete-below');
             } else {
+              wrapper = el.parentNode;
               styles = getComputedStyle(wrapper);
               borderWidths = parseFloat(styles.getPropertyValue('border-top-width')) + parseFloat(styles.getPropertyValue('border-bottom-width'));
               el.style.bottom = wrapper.getBoundingClientRect().height - borderWidths + 'px';

@@ -125,17 +125,19 @@
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); }
   .selectiv-component .autocomplete-above {
     box-shadow: 0 -1px 4px rgba(0, 0, 0, 0.2); }
-  .selectiv-component .autocomplete li {
-    padding: 5px 10px; }
-    .selectiv-component .autocomplete li.selected {
-      color: #bbbbbb;
-      cursor: default; }
-    .selectiv-component .autocomplete li.highlighted {
-      background-color: cornflowerblue; }
-      .selectiv-component .autocomplete li.highlighted:not(.selected) {
-        color: white;
-        cursor: pointer; }
-    .selectiv-component .autocomplete li.new-option-preview {
-      font-style: italic; }
+  .selectiv-component .autocomplete {
+    max-height: 200px; }
+    .selectiv-component .autocomplete li {
+      padding: 5px 10px; }
+      .selectiv-component .autocomplete li.selected {
+        color: #bbbbbb;
+        cursor: default; }
+      .selectiv-component .autocomplete li.highlighted {
+        background-color: cornflowerblue; }
+        .selectiv-component .autocomplete li.highlighted:not(.selected) {
+          color: white;
+          cursor: pointer; }
+      .selectiv-component .autocomplete li.new-option-preview {
+        font-style: italic; }
   .selectiv-component .search-match {
     background-color: #fff38c; }
