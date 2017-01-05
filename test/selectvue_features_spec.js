@@ -33,13 +33,13 @@ describe('selectiv view', function() {
     it('renders hidden input objects', function() {
       props = {
         options: [{name: 'one', id: '1'}, {name: 'two', id: 2}, {name: 'three', id: 'three'}, {name: 'blank', id: ''}],
-        optionsText: 'name',
-        optionsValue: 'id'
+        optionText: 'name',
+        optionValue: 'id'
       }
       vm = createInstance(props)
       expect(vm.$all('select[multiple] > option').every(function(option, i) {
-        return option.value === String(props.options[i][props.optionsValue]) &&
-          option.text === String(props.options[i][props.optionsText])
+        return option.value === String(props.options[i][props.optionValue]) &&
+          option.text === String(props.options[i][props.optionText])
       })).toBe(true)
     })
   })

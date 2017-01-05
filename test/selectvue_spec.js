@@ -38,8 +38,8 @@ describe('selectiv', function() {
       beforeEach(function() {
         props = {
           options: [{name: 'one', id: '1'}, {name: 'two', id: 2}, {name: 'three', id: 'three'}, {name: 'blank', id: ''}],
-          optionsText: 'name',
-          optionsValue: 'id'
+          optionText: 'name',
+          optionValue: 'id'
         }
         vm = createInstance(props)
       })
@@ -48,7 +48,7 @@ describe('selectiv', function() {
         expect(vm.optionItems.length).toEqual(props.options.length)
         expect(vm.optionItems.every(function(optionItem, i) {
           return optionItem.text !== undefined && optionItem.value !== undefined &&
-            optionItem.text === props.options[i][props.optionsText] && optionItem.value === props.options[i][props.optionsValue]
+            optionItem.text === props.options[i][props.optionText] && optionItem.value === props.options[i][props.optionValue]
         })).toBe(true)
       })
 
@@ -57,8 +57,8 @@ describe('selectiv', function() {
         props.options.push(newOption)
         expect(vm.optionItems.length).toEqual(props.options.length)
         var last = vm.optionItems.slice(-1)[0]
-        expect(last.text).toEqual(newOption[props.optionsText])
-        expect(last.value).toEqual(newOption[props.optionsValue])
+        expect(last.text).toEqual(newOption[props.optionText])
+        expect(last.value).toEqual(newOption[props.optionValue])
       })
     })
   })

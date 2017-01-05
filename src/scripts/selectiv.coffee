@@ -73,10 +73,10 @@ Vue.component 'selectiv',
     options:
       type: Array
       default: -> []
-    optionsText:
+    optionText:
       type: String
       default: 'text'
-    optionsValue:
+    optionValue:
       type: String
       default: 'value'
     multiple:
@@ -160,7 +160,7 @@ Vue.component 'selectiv',
       options = if @options.length > 0 then @options else @valueAsArray()
       options.concat(@userAddedOptions).map (option) =>
         [text, value] = if typeof option is 'object'
-          [option[@optionsText], option[@optionsValue]]
+          [option[@optionText], option[@optionValue]]
         else
           [option, option]
         new OptionItem(text, value, {isNew: option.isNew, isPreview: option.isPreview})

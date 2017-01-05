@@ -32,11 +32,11 @@
           return [];
         }
       },
-      optionsText: {
+      optionText: {
         type: String,
         "default": 'text'
       },
-      optionsValue: {
+      optionValue: {
         type: String,
         "default": 'value'
       },
@@ -159,7 +159,7 @@
         return options.concat(this.userAddedOptions).map((function(_this) {
           return function(option) {
             var ref, text, value;
-            ref = typeof option === 'object' ? [option[_this.optionsText], option[_this.optionsValue]] : [option, option], text = ref[0], value = ref[1];
+            ref = typeof option === 'object' ? [option[_this.optionText], option[_this.optionValue]] : [option, option], text = ref[0], value = ref[1];
             return new OptionItem(text, value, {
               isNew: option.isNew,
               isPreview: option.isPreview

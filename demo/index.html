@@ -143,8 +143,8 @@
         placeholder="Type something"
         :name="name"
         :options="emailList"
-        options-text="name"
-        options-value="email"
+        option-text="name"
+        option-value="email"
         @change="onChange">
         <template slot="selectedOption" scope="props">
           <span class="option-text" v-html="formatOption(props)"></span>
