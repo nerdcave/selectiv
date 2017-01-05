@@ -40,7 +40,7 @@
         type: String,
         "default": 'value'
       },
-      isMultiple: {
+      multiple: {
         type: Boolean,
         "default": false
       },
@@ -166,6 +166,9 @@
             });
           };
         })(this));
+      },
+      isMultiple: function() {
+        return this.multiple;
       },
       delimitedValue: function() {
         return this.currSelectedValues.join(this.valueDelimiter);

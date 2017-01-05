@@ -2,7 +2,7 @@
 <html>
 
   <head>
-    <script src="https://unpkg.com/vue/dist/vue.js"></script>
+    <script src="../node_modules/vue/dist/vue.js"></script>
     <script type="text/javascript" src="../dist/js/selectiv.min.js"></script>
     <link rel="stylesheet" type="text/css" href="../dist/css/selectiv.css">
 
@@ -39,7 +39,7 @@
       }
       h1, h2 { font-weight: 500; }
 
-      .autocomplete { max-height: 126px; }
+      .selectiv-component .autocomplete { max-height: 126px; }
       #custom-multi-example .autocomplete { max-height: 150px; }
     </style>
   </head>
@@ -57,7 +57,7 @@
       </ul>
       <p class="select-value">{{ name }}={{ selectedValues }}</p>
       <selectiv
-        is-multiple
+        multiple
         placeholder="Type something"
         allow-new
         value-delimiter=","
@@ -96,7 +96,7 @@
       </ul>
       <p class="select-value">{{ name }}={{ selectedValues }}</p>
       <selectiv
-        is-multiple
+        multiple
         restore-on-backspace
         placeholder="Type something"
         :name="name"
@@ -138,7 +138,7 @@
 
       <p class="select-value">{{ name }}={{ selectedValues }}</p>
       <selectiv
-        is-multiple
+        multiple
         search-value
         placeholder="Type something"
         :name="name"

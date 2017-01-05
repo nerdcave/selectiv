@@ -79,7 +79,7 @@ Vue.component 'selectiv',
     optionsValue:
       type: String
       default: 'value'
-    isMultiple:
+    multiple:
       type: Boolean
       default: false
     placeholder:
@@ -164,6 +164,8 @@ Vue.component 'selectiv',
         else
           [option, option]
         new OptionItem(text, value, {isNew: option.isNew, isPreview: option.isPreview})
+    isMultiple: ->
+      @multiple
     delimitedValue: ->
       @currSelectedValues.join(@valueDelimiter)
     selectedOptions: ->

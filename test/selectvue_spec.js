@@ -187,7 +187,7 @@ describe('selectiv', function() {
     beforeEach(function() {
       props = {
         options: [{text: 'one', value: '1'}, {text: 'two', value: 2}, {text: 'three', value: 'three'}, {text: 'blank', value: ''}],
-        isMultiple: true
+        multiple: true
       }
     })
 
