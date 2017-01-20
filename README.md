@@ -11,11 +11,12 @@ Features:
 
 ## demo
 
-Clone this repo and open `demo/index.html` in your web browser.
+Clone this repo and open `demo/index.html` in your web browser
 
 ## using
 
-Include the files in dist/ into your project however you'd like.
+Include the files in dist/ into your project however you'd like, then use the `<selectiv>` tag.
+See demo for examples and options.
 
 ## build, test
 

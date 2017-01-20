@@ -3,11 +3,6 @@
  (c) 2017, Jay Elaraj - http://nerdcave.com
 ###
 
-class OptionItem
-  constructor: (@text, @value, options = {}) ->
-    @isNew = !!options.isNew
-    @isPreview = !!options.isPreview
-
 Vue.component 'selectiv',
   template: '''
     <div class="selectiv-component" @mousedown.prevent="toggleAutocomplete">
@@ -335,3 +330,9 @@ Vue.component 'selectiv',
         @inputValue = ''
         @inputIndex = @currSelectedValues.length
         Vue.nextTick => @hideAutocomplete()
+
+
+class OptionItem
+  constructor: (@text, @value, options = {}) ->
+    @isNew = !!options.isNew
+    @isPreview = !!options.isPreview
