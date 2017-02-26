@@ -11,7 +11,7 @@
   "bugs": "https://github.com/nerdcave/selectiv/issues",
   "devDependencies": {
     "autoprefixer": "^6.5.4",
-    "coffee": "^3.3.0",
+    "coffee-script": "^1.12.4",
     "jasmine": "^2.5.2",
     "karma": "^1.3.0",
     "karma-chrome-launcher": "^2.0.0",
